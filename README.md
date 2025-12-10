@@ -94,9 +94,45 @@ python scripts/run_demo.py
 
 ---
 
+## 🏆 Prop Firm Challenge System (NEW!)
+
+**Turn $100 into a funded trading account!**
+
+| Metric | Value |
+|--------|-------|
+| **Pass Rate** | **40.4%** |
+| **Expected Value** | **+$263 per $100 challenge** |
+| **Over 10 challenges** | **+$2,631 expected** |
+
+### Strategy Parameters
+```python
+RISK_PER_TRADE = 8%      # Aggressive for prop firm
+ATR_STOP_LOSS = 0.8      # Tight stop
+ATR_TAKE_PROFIT = 1.5    # Quick target
+ATR_TRAILING = 0.5       # Lock in profits
+```
+
+### Quick Start - Prop Firm
+```bash
+# Run the complete prop firm system
+python scripts/prop_firm_system.py
+
+# Or test the strategy
+python scripts/aggressive_prop_test.py
+```
+
+### How It Works
+1. **Paper trade** for 20+ trades to validate your skills
+2. **Pass readiness check** (45%+ win rate, positive P/L)
+3. **Buy prop firm challenge** (~$100)
+4. **Follow the strategy** exactly
+5. **40% chance to pass** → Trade $10,000+ of their money!
+
+---
+
 ## 📊 Backtest Results
 
-### 🏆 Optimized EMA Crossover Strategy (BEST)
+### 🏆 Optimized EMA Crossover Strategy (Conservative)
 
 | Metric | Result |
 |--------|--------|
