@@ -6,6 +6,7 @@ python-dotenv>=1.0.0
 # Data sources
 alpha_vantage>=2.3.1
 requests>=2.31.0
+yfinance>=0.2.0
 
 # Technical analysis
 ta>=0.10.2
