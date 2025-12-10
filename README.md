@@ -20,14 +20,14 @@
 
 | Feature | Description |
 |---------|-------------|
-| 🤖 **Multiple Strategies** | SMA Crossover, RSI Mean Reversion, extensible framework |
-| 📊 **Technical Analysis** | 10+ indicators (SMA, EMA, RSI, MACD, Bollinger Bands, ATR) |
-| 🛡️ **Risk Management** | Position sizing, stop-loss, take-profit, max drawdown controls |
-| 📈 **Backtesting Engine** | High-performance backtester with detailed metrics |
-| 📉 **Performance Analytics** | Sharpe ratio, Sortino ratio, VaR, drawdown analysis |
-| 🎨 **Visualizations** | Professional charts for signals, equity curves, drawdowns |
-| 🧪 **Comprehensive Tests** | Unit tests for all modules |
-| 📁 **Sample Data** | Built-in data generator for testing without API keys |
+| 🏆 **Prop Firm System** | 40.4% pass rate, +$263 expected value per challenge |
+| 🔴 **Live Signals** | Real-time XAU/USD signals via Yahoo Finance |
+| 📊 **Trading Dashboard** | Complete challenge tracking and management |
+| 🤖 **Multiple Strategies** | EMA Crossover, MACD, RSI extremes |
+| 🛡️ **Risk Management** | Position sizing, stop-loss, trailing stops |
+| 📈 **Backtesting Engine** | Monte Carlo validated performance |
+| 🔗 **MT5 Integration** | Ready for live broker connection |
+| 📖 **Complete Guide** | Step-by-step prop firm challenge guide |
 
 ---
 
@@ -58,39 +58,37 @@ See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed system design.
 
 ## 🚀 Quick Start
 
-### Option 1: Run with Sample Data (No API Key Required)
+### One Command to Start
 
 ```bash
-# Clone the repository
+# Clone and setup
 git clone https://github.com/qaaph-zyld/xau_usd_trading_bot.git
 cd xau_usd_trading_bot
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
 
-# Generate sample data
-python scripts/generate_sample_data.py
-
-# Run demo backtest
-python scripts/run_demo.py
+# Launch the system
+python start.py
 ```
 
-### Option 2: Run with Live Data
+### Daily Commands
 
 ```bash
-# Create .env file with your API key
-echo "ALPHA_VANTAGE_API_KEY=your_key_here" > .env
+# Get today's trading signal
+python scripts/live_signals.py
 
-# Fetch real market data
-python src/data/collector.py
+# Manage your prop firm challenge
+python scripts/trading_dashboard.py
 
-# Run backtest on real data
-python scripts/run_demo.py
+# Complete prop firm system
+python scripts/prop_firm_system.py
+
+# Validate strategy performance
+python scripts/final_validation.py
 ```
+
+### Read the Guide
+
+📖 **[Complete Prop Firm Guide](docs/PROP_FIRM_GUIDE.md)** - Step-by-step instructions
 
 ---
 
