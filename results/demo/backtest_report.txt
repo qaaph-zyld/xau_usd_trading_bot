@@ -1,0 +1,47 @@
+================================================================================
+XAU/USD TRADING BOT - BACKTEST REPORT
+Generated: 2025-12-10 01:32:44
+================================================================================
+
+
+────────────────────────────────────────
+Strategy: SMACrossover
+────────────────────────────────────────
+
+Performance Metrics:
+  • Total Return:            0.47%
+  • Annual Return:           0.18%
+  • Volatility:              1.28%
+  • Sharpe Ratio:            0.14
+  • Max Drawdown:           -2.77%
+  • Win Rate:               43.14%
+  • Total Trades:              14
+  • Profit Factor:           1.02
+
+Capital:
+  • Initial:           $  100,000.00
+  • Final:             $  100,469.11
+  • P&L:               $      469.11
+
+────────────────────────────────────────
+Strategy: RSIMeanReversion
+────────────────────────────────────────
+
+Performance Metrics:
+  • Total Return:            1.96%
+  • Annual Return:           0.71%
+  • Volatility:              1.38%
+  • Sharpe Ratio:            0.52
+  • Max Drawdown:           -2.29%
+  • Win Rate:               50.57%
+  • Total Trades:               8
+  • Profit Factor:           1.09
+
+Capital:
+  • Initial:           $  100,000.00
+  • Final:             $  101,961.86
+  • P&L:               $    1,961.86
+
+================================================================================
+WINNER (Highest Sharpe Ratio): RSIMeanReversion
+================================================================================

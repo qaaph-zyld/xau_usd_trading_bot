@@ -30,15 +30,18 @@ class BaseStrategy(ABC):
         """
         pass
     
-    def calculate_position_size(self, signal: float, current_price: float) -> float:
+    def calculate_position_size(self, signal: float, current_price: float, current_capital: float = None) -> float:
         """
         Calculate position size based on available capital
         """
         if signal == 0:
             return 0
         
-        # Use 2% risk per trade
-        risk_amount = self.capital.iloc[-1] * 0.02
+        # Use current capital if provided, otherwise use initial
+        capital = current_capital if current_capital is not None else self.initial_capital
+        
+        # Use 5% risk per trade for more significant position sizes
+        risk_amount = capital * 0.05
         position_size = risk_amount / current_price
         return position_size if signal > 0 else -position_size
     
@@ -51,22 +54,38 @@ class BaseStrategy(ABC):
             signals = self.generate_signals()
             
             # Calculate positions and PnL
+            current_position = 0
+            
             for i in range(len(self.data)):
                 if i == 0:
                     self.positions.iloc[i] = 0
+                    self.capital.iloc[i] = self.initial_capital
                     continue
                 
                 current_signal = signals.iloc[i]
                 current_price = self.data['close'].iloc[i]
+                prev_capital = self.capital.iloc[i-1]
                 
-                # Calculate new position size
-                new_position = self.calculate_position_size(current_signal, current_price)
-                self.positions.iloc[i] = new_position
+                # Skip if we don't have valid previous capital
+                if pd.isna(prev_capital):
+                    prev_capital = self.initial_capital
                 
-                # Calculate PnL
+                # Position management: hold position until opposite signal
+                if current_signal == 1:  # Buy signal
+                    if current_position <= 0:  # Only enter if not already long
+                        current_position = self.calculate_position_size(1, current_price, prev_capital)
+                elif current_signal == -1:  # Sell signal
+                    if current_position >= 0:  # Only enter if not already short
+                        current_position = self.calculate_position_size(-1, current_price, prev_capital)
+                # If signal is 0, maintain current position (no change)
+                
+                self.positions.iloc[i] = current_position
+                
+                # Calculate PnL based on held position
                 price_change = self.data['close'].iloc[i] - self.data['close'].iloc[i-1]
-                pnl = self.positions.iloc[i-1] * price_change
-                self.capital.iloc[i] = self.capital.iloc[i-1] + pnl
+                prev_position = self.positions.iloc[i-1] if not pd.isna(self.positions.iloc[i-1]) else 0
+                pnl = prev_position * price_change
+                self.capital.iloc[i] = prev_capital + pnl
             
             # Calculate performance metrics
             return self._calculate_performance_metrics()
@@ -79,16 +98,64 @@ class BaseStrategy(ABC):
         """
         Calculate strategy performance metrics
         """
-        returns = self.capital.pct_change().dropna()
+        # Drop NaN values from capital series
+        valid_capital = self.capital.dropna()
+        valid_positions = self.positions.dropna()
+        
+        if len(valid_capital) < 2:
+            return {
+                'total_return': 0.0,
+                'annual_return': 0.0,
+                'volatility': 0.0,
+                'sharpe_ratio': 0.0,
+                'max_drawdown': 0.0,
+                'final_capital': self.initial_capital,
+                'win_rate': 0.0,
+                'total_trades': 0,
+                'profit_factor': 0.0
+            }
+        
+        returns = valid_capital.pct_change(fill_method=None).dropna()
+        
+        final_capital = valid_capital.iloc[-1]
+        total_return = (final_capital - self.initial_capital) / self.initial_capital
+        
+        # Handle edge cases
+        annual_return = returns.mean() * 252 if len(returns) > 0 else 0
+        volatility = returns.std() * np.sqrt(252) if len(returns) > 0 else 0
+        sharpe_ratio = annual_return / volatility if volatility != 0 else 0
+        
+        # Calculate max drawdown
+        rolling_max = valid_capital.expanding().max()
+        drawdowns = valid_capital / rolling_max - 1
+        max_drawdown = drawdowns.min() if len(drawdowns) > 0 else 0
+        
+        # Calculate trade-based metrics
+        position_changes = valid_positions.diff().fillna(0)
+        trade_entries = position_changes[position_changes != 0]
+        total_trades = len(trade_entries)
+        
+        # Calculate per-period PnL for win rate
+        period_returns = valid_capital.diff().dropna()
+        winning_periods = len(period_returns[period_returns > 0])
+        total_periods = len(period_returns)
+        win_rate = winning_periods / total_periods if total_periods > 0 else 0
+        
+        # Profit factor (gross profit / gross loss)
+        gross_profit = period_returns[period_returns > 0].sum()
+        gross_loss = abs(period_returns[period_returns < 0].sum())
+        profit_factor = gross_profit / gross_loss if gross_loss > 0 else float('inf') if gross_profit > 0 else 0
         
         metrics = {
-            'total_return': (self.capital.iloc[-1] - self.initial_capital) / self.initial_capital,
-            'annual_return': returns.mean() * 252,  # Assuming daily data
-            'volatility': returns.std() * np.sqrt(252),
-            'sharpe_ratio': (returns.mean() * 252) / (returns.std() * np.sqrt(252)) if returns.std() != 0 else 0,
-            'max_drawdown': (self.capital / self.capital.cummax() - 1).min(),
-            'final_capital': self.capital.iloc[-1],
-            'win_rate': len(returns[returns > 0]) / len(returns) if len(returns) > 0 else 0
+            'total_return': total_return,
+            'annual_return': annual_return,
+            'volatility': volatility,
+            'sharpe_ratio': sharpe_ratio,
+            'max_drawdown': max_drawdown,
+            'final_capital': final_capital,
+            'win_rate': win_rate,
+            'total_trades': total_trades,
+            'profit_factor': profit_factor
         }
         
         return metrics

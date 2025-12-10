@@ -49,8 +49,8 @@ def run_strategy_comparison(data: pd.DataFrame) -> dict:
         },
         'RSIMeanReversionStrategy': {
             'rsi_period': 14,
-            'oversold': 30,
-            'overbought': 70
+            'oversold_threshold': 30,
+            'overbought_threshold': 70
         }
     }
     
@@ -202,6 +202,9 @@ def generate_report(results: dict, output_dir: Path):
     
     for strategy_name, result in results.items():
         metrics = result['metrics']
+        profit_factor = metrics.get('profit_factor', 0)
+        pf_display = f"{profit_factor:.2f}" if profit_factor != float('inf') else "∞"
+        
         report_lines.extend([
             f"\n{'─' * 40}",
             f"Strategy: {strategy_name.replace('Strategy', '')}",
@@ -214,6 +217,8 @@ def generate_report(results: dict, output_dir: Path):
             f"  • Sharpe Ratio:      {metrics['sharpe_ratio']:>10.2f}",
             f"  • Max Drawdown:      {metrics['max_drawdown']*100:>10.2f}%",
             f"  • Win Rate:          {metrics['win_rate']*100:>10.2f}%",
+            f"  • Total Trades:      {metrics.get('total_trades', 0):>10}",
+            f"  • Profit Factor:     {pf_display:>10}",
             f"",
             f"Capital:",
             f"  • Initial:           ${100000:>12,.2f}",
@@ -235,7 +240,7 @@ def generate_report(results: dict, output_dir: Path):
     
     # Save report
     report_path = output_dir / "backtest_report.txt"
-    with open(report_path, 'w') as f:
+    with open(report_path, 'w', encoding='utf-8') as f:
         f.write(report_text)
     
     # Also save as JSON

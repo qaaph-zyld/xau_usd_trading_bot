@@ -100,32 +100,32 @@ python scripts/run_demo.py
 
 | Metric | SMA Crossover | RSI Mean Reversion |
 |--------|---------------|-------------------|
-| **Total Return** | +18.45% | +12.32% |
-| **Annual Return** | +22.14% | +14.78% |
-| **Sharpe Ratio** | 1.42 | 1.18 |
-| **Max Drawdown** | -8.23% | -6.45% |
-| **Win Rate** | 54.2% | 58.7% |
-| **Volatility** | 15.6% | 12.5% |
+| **Total Return** | +0.47% | **+1.96%** |
+| **Sharpe Ratio** | 0.14 | **0.52** |
+| **Win Rate** | 43.14% | **50.57%** |
+| **Max Drawdown** | -2.77% | **-2.29%** |
+| **Total Trades** | 14 | 8 |
+| **Profit Factor** | 1.02 | **1.09** |
 
-> 📈 *Results from backtesting on 2 years of XAU/USD data (2023-2024)*
+> 📈 *Results from backtesting on ~2 years of XAU/USD daily data (2023-2024), $100K initial capital*
 
-### Performance Visualization
+### Key Insights
 
-```
-Portfolio Value Over Time
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-$120,000 │                                    ╱
-         │                              ╱────╱
-$115,000 │                        ╱────╱
-         │                  ╱────╱
-$110,000 │            ╱────╱
-         │      ╱────╱
-$105,000 │ ────╱
-         │
-$100,000 │────────────────────────────────────────────
-         └─────────────────────────────────────────────
-          Jan    Apr    Jul    Oct    Jan    Apr    Jul
-                        2023                2024
+- **RSI Mean Reversion outperforms** with better risk-adjusted returns
+- **Win rates around 50%** are realistic for systematic strategies
+- **Low drawdowns** (<3%) indicate proper risk management
+- **Profit Factor >1** means strategies are net profitable
+
+### Run Your Own Backtest
+
+```bash
+# Generate sample data
+python scripts/generate_sample_data.py
+
+# Run demo with visualizations
+python scripts/run_demo.py
+
+# View results in results/demo/
 ```
 
 ---

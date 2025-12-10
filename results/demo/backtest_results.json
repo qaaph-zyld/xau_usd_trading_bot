@@ -1,0 +1,24 @@
+{
+  "SMACrossoverStrategy": {
+    "total_return": 0.004691070911635325,
+    "annual_return": 0.0017661572876607945,
+    "volatility": 0.012761684863501028,
+    "sharpe_ratio": 0.13839530646239986,
+    "max_drawdown": -0.027659340003045152,
+    "final_capital": 100469.10709116353,
+    "win_rate": 0.43142857142857144,
+    "total_trades": 14,
+    "profit_factor": 1.0230134233390529
+  },
+  "RSIMeanReversionStrategy": {
+    "total_return": 0.01961863887473024,
+    "annual_return": 0.007088894681078255,
+    "volatility": 0.013755833038109927,
+    "sharpe_ratio": 0.5153373598995267,
+    "max_drawdown": -0.022906627092400766,
+    "final_capital": 101961.86388747302,
+    "win_rate": 0.5057142857142857,
+    "total_trades": 8,
+    "profit_factor": 1.086374772008886
+  }
+}
