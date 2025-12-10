@@ -1,0 +1,12 @@
+{
+  "paper_trades": [],
+  "challenges": [],
+  "current_challenge": null,
+  "stats": {
+    "paper_trades_total": 0,
+    "paper_wins": 0,
+    "paper_losses": 0,
+    "paper_pnl": 0
+  },
+  "created": "2025-12-10T03:18:54.465453"
+}
