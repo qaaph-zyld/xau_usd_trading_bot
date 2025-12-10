@@ -12,6 +12,7 @@ class PositionSize:
     risk_amount: float
     stop_loss_price: float
     take_profit_price: Optional[float] = None
+    entry_price: Optional[float] = None
 
 class PositionSizer:
     def __init__(self, 
@@ -63,7 +64,8 @@ class PositionSizer:
                 units=units,
                 risk_amount=risk_amount,
                 stop_loss_price=stop_loss_price,
-                take_profit_price=take_profit_price
+                take_profit_price=take_profit_price,
+                entry_price=entry_price
             )
             
         except Exception as e:
@@ -135,10 +137,16 @@ class PositionSizer:
                 return position_size
                 
             # Calculate total correlation impact
+            # Get the new asset (first column not in current positions)
+            new_asset = [c for c in correlation_matrix.columns if c not in current_positions]
+            if not new_asset:
+                return position_size
+            new_asset = new_asset[0]
+            
             total_correlation = sum(
-                abs(corr) * size 
+                abs(correlation_matrix.loc[new_asset, asset]) * abs(size)
                 for asset, size in current_positions.items()
-                if asset in correlation_matrix.columns
+                if asset in correlation_matrix.columns and new_asset in correlation_matrix.index
             )
             
             # Adjust position size based on correlation
