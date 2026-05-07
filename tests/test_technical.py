@@ -6,7 +6,7 @@ from src.analysis.technical import TechnicalAnalyzer
 @pytest.fixture
 def sample_data():
     """Create sample OHLC data for testing"""
-    dates = pd.date_range(start='2023-01-01', periods=100, freq='H')
+    dates = pd.date_range(start='2023-01-01', periods=100, freq='h')
     data = {
         'open': np.random.randn(100).cumsum() + 1000,
         'high': np.random.randn(100).cumsum() + 1002,
