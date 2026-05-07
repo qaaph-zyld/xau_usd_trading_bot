@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 @pytest.fixture
 def sample_data():
     """Create sample OHLCV data for testing"""
-    dates = pd.date_range(start='2023-01-01', periods=500, freq='H')
+    dates = pd.date_range(start='2023-01-01', periods=500, freq='h')
     data = {
         'open': np.random.randn(500).cumsum() + 1000,
         'high': np.random.randn(500).cumsum() + 1002,

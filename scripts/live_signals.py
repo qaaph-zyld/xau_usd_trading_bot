@@ -48,63 +48,43 @@ class LiveSignalGenerator:
             json.dump(self.signals, f, indent=2, default=str)
     
     def fetch_live_data(self):
-        """Fetch live XAU/USD data from free sources."""
-        
-        print("📡 Fetching live data...")
-        
-        # Try multiple free data sources
-        data = None
-        
-        # Method 1: Try Yahoo Finance (yfinance)
+        """
+        Fetch live XAU/USD data from a real market source.
+
+        Returns:
+            DataFrame with OHLCV bars sourced from yfinance (gold futures GC=F).
+
+        Raises:
+            RuntimeError: if no real market data could be fetched. The script
+                will NOT fall back to synthetic / simulated prices, because
+                trading on fabricated data is dangerous.
+        """
+        print("Fetching live data from yfinance (GC=F gold futures)...")
+
         try:
             import yfinance as yf
-            ticker = yf.Ticker("GC=F")  # Gold futures
+            ticker = yf.Ticker("GC=F")
             data = ticker.history(period="3mo", interval="1d")
-            if len(data) > 0:
-                data = data.rename(columns={
-                    'Open': 'open', 'High': 'high', 
-                    'Low': 'low', 'Close': 'close', 'Volume': 'volume'
-                })
-                print("   ✅ Data from Yahoo Finance")
-                return data
         except Exception as e:
-            print(f"   ⚠️ Yahoo Finance: {e}")
-        
-        # Method 2: Use sample data with simulated recent prices
-        print("   📂 Using sample data + simulated recent prices")
-        
-        sample_path = self.data_path / "XAU_USD_1D_sample.csv"
-        if sample_path.exists():
-            data = pd.read_csv(sample_path, index_col=0, parse_dates=True)
-            
-            # Simulate recent price movement from last known price
-            last_price = data['close'].iloc[-1]
-            last_date = data.index[-1]
-            
-            # Add simulated recent days
-            today = pd.Timestamp.now().normalize()
-            days_to_add = (today - last_date).days
-            
-            if days_to_add > 0:
-                np.random.seed(42)  # Reproducible
-                for i in range(min(days_to_add, 30)):
-                    new_date = last_date + timedelta(days=i+1)
-                    if new_date.weekday() < 5:  # Skip weekends
-                        change = np.random.normal(0, last_price * 0.01)
-                        new_price = last_price + change
-                        new_row = pd.DataFrame({
-                            'open': [new_price - np.random.uniform(0, 20)],
-                            'high': [new_price + np.random.uniform(5, 25)],
-                            'low': [new_price - np.random.uniform(5, 25)],
-                            'close': [new_price],
-                            'volume': [np.random.randint(50000, 150000)]
-                        }, index=[new_date])
-                        data = pd.concat([data, new_row])
-                        last_price = new_price
-            
-            return data
-        
-        return None
+            raise RuntimeError(
+                f"Failed to fetch live XAU/USD data from yfinance: {e}. "
+                "This script refuses to operate on synthetic prices; please "
+                "fix your network / yfinance install and retry."
+            ) from e
+
+        if data is None or len(data) == 0:
+            raise RuntimeError(
+                "yfinance returned no data for GC=F. This script refuses to "
+                "operate on synthetic prices; please retry later or use a "
+                "different data source."
+            )
+
+        data = data.rename(columns={
+            'Open': 'open', 'High': 'high',
+            'Low': 'low', 'Close': 'close', 'Volume': 'volume'
+        })
+        print(f"   Got {len(data)} daily bars from yfinance")
+        return data
     
     def calculate_indicators(self, data):
         """Calculate all indicators."""
